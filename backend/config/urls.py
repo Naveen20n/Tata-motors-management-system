@@ -19,5 +19,15 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/auth/', include('users.urls')),
     path('api/', include('vehicles.urls')),
+    path('api/', include('dealerships.urls')),
+    path('api/', include('offers.urls')),
+    path('api/', include('testdrives.urls')),
+    path('api/', include('bookings.urls')),
+    path('api/', include('payments.urls')),
+    path('api/', include('comparisons.urls')),
+    path('api/', include('wishlists.urls')),
+    path('api/', include('recommendations.urls')),
+    path('api/', include('chargingstations.urls')),
 ]

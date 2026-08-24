@@ -1,3 +1,14 @@
-from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from .models import Offer
+from .serializers import OfferSerializer
+
+
+class OfferListAPIView(generics.ListAPIView):
+    queryset = Offer.objects.all()
+    serializer_class = OfferSerializer
+
+
+class OfferDetailAPIView(generics.RetrieveAPIView):
+    queryset = Offer.objects.all()
+    serializer_class = OfferSerializer

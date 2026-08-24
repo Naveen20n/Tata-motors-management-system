@@ -1,3 +1,14 @@
-from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from .models import TestDrive
+from .serializers import TestDriveSerializer
+
+
+class TestDriveListCreateAPIView(generics.ListCreateAPIView):
+    queryset = TestDrive.objects.all()
+    serializer_class = TestDriveSerializer
+
+
+class TestDriveRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = TestDrive.objects.all()
+    serializer_class = TestDriveSerializer
