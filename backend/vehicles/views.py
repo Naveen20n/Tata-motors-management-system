@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.response import Response
 
@@ -8,6 +9,42 @@ from .serializers import VehicleSerializer
 class VehicleListCreateAPIView(generics.ListCreateAPIView):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
+
+    def get_queryset(self):
+        queryset = Vehicle.objects.all()
+
+        search = self.request.query_params.get('search', '').strip()
+        category = self.request.query_params.get('category')
+        fuel_type = self.request.query_params.get('fuel_type')
+        status = self.request.query_params.get('status')
+        min_price = self.request.query_params.get('min_price')
+        max_price = self.request.query_params.get('max_price')
+
+        if search:
+            queryset = queryset.filter(
+                Q(name__icontains=search)
+                | Q(category__icontains=search)
+                | Q(fuel_type__icontains=search)
+                | Q(body_type__icontains=search)
+                | Q(description__icontains=search)
+            )
+
+        if category:
+            queryset = queryset.filter(category__iexact=category)
+
+        if fuel_type:
+            queryset = queryset.filter(fuel_type__iexact=fuel_type)
+
+        if status:
+            queryset = queryset.filter(status__iexact=status)
+
+        if min_price:
+            queryset = queryset.filter(starting_price__gte=min_price)
+
+        if max_price:
+            queryset = queryset.filter(starting_price__lte=max_price)
+
+        return queryset.order_by('-created_at')
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
