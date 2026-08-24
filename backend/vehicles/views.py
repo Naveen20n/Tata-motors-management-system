@@ -2,8 +2,8 @@ from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from .models import Vehicle
-from .serializers import VehicleSerializer
+from .models import Vehicle, VehicleVariant
+from .serializers import VehicleSerializer, VehicleVariantSerializer
 
 
 class VehicleListCreateAPIView(generics.ListCreateAPIView):
@@ -57,3 +57,24 @@ class VehicleListCreateAPIView(generics.ListCreateAPIView):
 class VehicleRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
+
+
+class VehicleVariantListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = VehicleVariantSerializer
+
+    def get_queryset(self):
+        vehicle_id = self.kwargs.get('vehicle_id')
+        return VehicleVariant.objects.filter(vehicle_id=vehicle_id).order_by('name')
+
+    def perform_create(self, serializer):
+        vehicle_id = self.kwargs.get('vehicle_id')
+        vehicle = Vehicle.objects.get(pk=vehicle_id)
+        serializer.save(vehicle=vehicle)
+
+
+class VehicleVariantRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = VehicleVariantSerializer
+
+    def get_queryset(self):
+        vehicle_id = self.kwargs.get('vehicle_id')
+        return VehicleVariant.objects.filter(vehicle_id=vehicle_id)
